@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0e0e11">
+<title>Recall — ระเบียบวิธีวิจัยทางบริบาลเภสัชกรรม</title>
+<style>
+:root{
+  --bg:#0e0e11; --card:#17181d; --line:#2a2c34;
+  --ink:#f4f5f7; --muted:#9aa0ad;
+  --accent:#f04e23; --accent2:#ff7a4d;
+  --good:#20c08a; --warn:#e8a33d; --bad:#e0503f;
+  --r:22px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans Thai","IBM Plex Sans Thai","Sarabun",sans-serif;
+  line-height:1.55;font-size:16px;min-height:100vh;
+  padding:env(safe-area-inset-top) 0 calc(env(safe-area-inset-bottom) + 12px);
+}
+.wrap{max-width:620px;margin:0 auto;padding:18px 16px 40px;}
+button,input{font-family:inherit;}
+.hidden{display:none!important;}
+.nojs{background:#3a1a10;border:1px solid #7a3a22;color:#ffcdb8;border-radius:14px;
+  padding:14px 16px;margin:16px;font-size:14px;line-height:1.6;text-align:center;}
+.nojs small{color:#c99b86;display:block;margin-top:6px;font-size:12.5px;}
+body.js-on .nojs{display:none;}
+
+/* ---------- topbar ---------- */
+.topbar{display:flex;align-items:center;gap:12px;margin-bottom:14px;min-height:48px;}
+.backbtn{width:46px;height:46px;flex:0 0 46px;border-radius:14px;background:#1e2027;border:none;color:var(--ink);
+  font-size:22px;display:none;align-items:center;justify-content:center;cursor:pointer;}
+.backbtn.show{display:flex;}
+.topbar h1{font-size:19px;margin:0;font-weight:800;letter-spacing:-.2px;flex:1;}
+.counter{font-size:17px;font-weight:800;color:var(--muted);}
+.prog{height:8px;background:#23252c;border-radius:99px;overflow:hidden;margin:0 0 22px;}
+.prog i{display:block;height:100%;background:#fff;border-radius:99px;width:0;transition:width .3s;}
+.prog.hide,.counter.hide{visibility:hidden;}
+
+/* ---------- login ---------- */
+.login{padding:12vh 4px 40px;text-align:center;}
+.logo{width:74px;height:74px;border-radius:24px;margin:0 auto 22px;
+  background:linear-gradient(140deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;font-size:36px;}
+.login h2{font-size:26px;margin:0 0 8px;letter-spacing:-.5px;}
+.login p{color:var(--muted);font-size:14px;margin:0 0 28px;}
+.field{display:flex;gap:10px;margin-bottom:14px;}
+.field input{flex:1;background:var(--card);border:1.5px solid var(--line);border-radius:16px;
+  padding:16px 18px;color:var(--ink);font-size:17px;outline:none;text-align:center;font-weight:700;}
+.field input:focus{border-color:var(--accent);}
+.err{color:var(--bad);font-size:13.5px;min-height:20px;margin-bottom:10px;}
+.who{display:flex;gap:10px;justify-content:center;margin-top:26px;}
+.whochip{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 16px;
+  font-size:13px;color:var(--muted);cursor:pointer;}
+.whochip b{color:var(--ink);display:block;font-size:14.5px;margin-bottom:2px;}
+
+/* ---------- home ---------- */
+.hero{margin:6px 0 24px;}
+.hero h2{font-size:25px;margin:0 0 6px;letter-spacing:-.5px;line-height:1.3;}
+.hero p{margin:0;color:var(--muted);font-size:14px;}
+.menu{display:grid;gap:14px;}
+.mcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;
+  cursor:pointer;text-align:left;color:var(--ink);position:relative;overflow:hidden;transition:transform .15s;}
+.mcard:active{transform:scale(.985);}
+.mcard .ic{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;
+  font-size:22px;background:linear-gradient(140deg,var(--accent),var(--accent2));margin-bottom:14px;}
+.mcard h3{margin:0 0 6px;font-size:19px;}
+.mcard p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.5;}
+.mcard .go{position:absolute;right:18px;top:22px;color:var(--muted);font-size:22px;}
+.statrow{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+.chip{font-size:11.5px;font-weight:700;padding:5px 11px;border-radius:99px;background:#23252c;color:var(--muted);}
+.chip.hot{background:rgba(240,78,35,.15);color:var(--accent2);}
+.chip.ok{background:rgba(32,192,138,.15);color:var(--good);}
+
+/* ---------- flashcard ---------- */
+.stage{perspective:1400px;-webkit-perspective:1400px;margin-bottom:16px;}
+.fc{position:relative;width:100%;min-height:clamp(320px,52vh,470px);
+  display:grid;grid-template-areas:"c";
+  transform-style:preserve-3d;-webkit-transform-style:preserve-3d;
+  transition:transform .5s cubic-bezier(.4,.2,.2,1);cursor:pointer;
+  touch-action:manipulation;}
+.fc.flip{transform:rotateY(180deg);-webkit-transform:rotateY(180deg);}
+.face{grid-area:c;position:relative;width:100%;min-width:0;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border-radius:26px;padding:26px 22px;display:flex;flex-direction:column;justify-content:center;}
+.front{background:linear-gradient(175deg,#3a1509 0%,#c9401c 42%,#f8b79c 74%,#f2e6e0 100%);}
+.front .tag{position:absolute;top:20px;left:22px;right:22px;font-size:11.5px;font-weight:800;letter-spacing:.6px;
+  text-transform:uppercase;color:rgba(255,255,255,.75);}
+.front h2{font-size:27px;line-height:1.35;margin:0;text-align:center;font-weight:800;color:#fff;
+  text-shadow:0 2px 18px rgba(0,0,0,.35);}
+.front .en{display:block;font-size:15px;font-weight:600;color:rgba(255,255,255,.8);margin-top:8px;}
+.back{transform:rotateY(180deg);-webkit-transform:rotateY(180deg);
+  background:linear-gradient(170deg,#4a1708,#d1451e 45%,#f6c6ae);padding:14px;}
+.sheet{background:#fbfaf9;color:#16181d;border-radius:20px;padding:22px 20px;flex:1;
+  display:flex;flex-direction:column;justify-content:center;}
+.sheet .kw{font-size:12px;font-weight:800;color:var(--accent);letter-spacing:.4px;margin-bottom:12px;text-transform:uppercase;}
+.sheet ul{list-style:none;margin:0;padding:0;}
+.sheet li{position:relative;padding-left:20px;margin:11px 0;font-size:16.5px;line-height:1.5;font-weight:600;}
+.sheet li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:8px;border-radius:50%;background:var(--accent);}
+.sheet li b{color:#c2380f;}
+.hintline{text-align:center;color:var(--muted);font-size:14px;margin:0 0 18px;}
+.rate{text-align:center;margin-bottom:18px;}
+.rate p{margin:0 0 12px;color:var(--muted);font-size:14px;}
+.stars{display:flex;gap:12px;justify-content:center;}
+.star{width:56px;height:56px;border-radius:50%;border:none;background:#2a2c34;color:#5d616d;font-size:26px;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .12s,background .12s;}
+.star:active{transform:scale(.9);}
+.star.on{background:var(--accent);color:#fff;}
+.ratelabel{font-size:12.5px;color:var(--muted);margin-top:10px;min-height:18px;}
+
+.btn{width:100%;border:none;border-radius:99px;padding:17px;font-size:17px;font-weight:800;cursor:pointer;}
+.btn.primary{background:#fff;color:#14151a;}
+.btn.primary:disabled{background:#3a3d46;color:#7c8090;cursor:default;}
+.btn.ghost{background:#23252c;color:var(--ink);margin-top:10px;}
+.btn.accent{background:var(--accent);color:#fff;}
+
+/* ---------- quiz ---------- */
+.qhead{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 18px;margin-bottom:14px;}
+.qhead .no{font-size:12.5px;color:var(--muted);font-weight:700;margin-bottom:6px;}
+.qhead .topic{font-size:12px;font-weight:800;color:var(--accent2);margin-bottom:8px;}
+.qhead h3{margin:0;font-size:17.5px;line-height:1.5;font-weight:700;}
+.qhead .multi{margin-top:8px;font-size:12px;color:var(--muted);}
+.opts{display:grid;gap:10px;margin-bottom:16px;}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;background:var(--card);border:1.5px solid var(--line);
+  border-radius:16px;padding:14px 15px;color:var(--ink);font-size:15.5px;line-height:1.5;cursor:pointer;}
+.opt .bx{width:22px;height:22px;flex:0 0 22px;border-radius:7px;border:2px solid #4a4d57;margin-top:1px;
+  display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;}
+.opt.sel{border-color:var(--accent);background:rgba(240,78,35,.09);}
+.opt.sel .bx{background:var(--accent);border-color:var(--accent);}
+.opt.correct{border-color:var(--good);background:rgba(32,192,138,.12);}
+.opt.correct .bx{background:var(--good);border-color:var(--good);}
+.opt.wrong{border-color:var(--bad);background:rgba(224,80,63,.12);}
+.opt.wrong .bx{background:var(--bad);border-color:var(--bad);}
+.opt.locked{cursor:default;}
+.exp{background:#151a18;border:1px solid #24463a;border-left:4px solid var(--good);border-radius:14px;
+  padding:14px 16px;margin-bottom:16px;font-size:14.5px;line-height:1.6;}
+.exp.miss{background:#1c1614;border-color:#4a2a24;border-left-color:var(--bad);}
+.exp .lbl{display:block;font-size:12px;font-weight:800;margin-bottom:6px;letter-spacing:.4px;color:var(--good);}
+.exp.miss .lbl{color:var(--bad);}
+
+/* ---------- result ---------- */
+.result{text-align:center;padding:26px 10px;}
+.result .big{font-size:56px;font-weight:900;letter-spacing:-2px;margin:8px 0 2px;}
+.result .sub{color:var(--muted);font-size:14.5px;margin-bottom:24px;}
+.revlist{text-align:left;display:grid;gap:8px;margin:0 0 24px;}
+.revitem{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:14.5px;
+  display:flex;gap:10px;align-items:center;}
+.revitem .dot{width:9px;height:9px;border-radius:50%;flex:0 0 9px;}
+
+/* ---------- admin ---------- */
+.live{display:flex;align-items:center;gap:9px;background:var(--card);border:1px solid var(--line);
+  border-radius:16px;padding:13px 16px;margin-bottom:16px;font-size:14px;}
+.pulse{width:10px;height:10px;border-radius:50%;background:#5d616d;flex:0 0 10px;}
+.pulse.on{background:var(--good);box-shadow:0 0 0 0 rgba(32,192,138,.6);animation:pl 1.8s infinite;}
+@keyframes pl{0%{box-shadow:0 0 0 0 rgba(32,192,138,.55)}70%{box-shadow:0 0 0 11px rgba(32,192,138,0)}100%{box-shadow:0 0 0 0 rgba(32,192,138,0)}}
+.live b{font-weight:800;}
+.live span{color:var(--muted);margin-left:auto;font-size:12.5px;}
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-bottom:18px;}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px 16px;}
+.tile .lb{font-size:11.5px;color:var(--muted);font-weight:700;letter-spacing:.3px;margin-bottom:7px;}
+.tile .vl{font-size:27px;font-weight:900;letter-spacing:-1px;line-height:1.1;}
+.tile .vl small{font-size:14px;font-weight:700;color:var(--muted);letter-spacing:0;}
+.tile .sb{font-size:12px;color:var(--muted);margin-top:4px;}
+.sec{margin-bottom:22px;}
+.sec h3{font-size:15.5px;margin:0 0 4px;font-weight:800;}
+.sec .cap{font-size:12.5px;color:var(--muted);margin:0 0 12px;}
+.bar{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:8px;}
+.bar .r1{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:8px;font-size:14px;}
+.bar .r1 b{font-weight:700;flex:1;}
+.bar .r1 span{font-size:12.5px;color:var(--muted);font-weight:700;white-space:nowrap;}
+.track{height:7px;background:#23252c;border-radius:99px;overflow:hidden;}
+.track i{display:block;height:100%;border-radius:99px;}
+.feed{display:grid;gap:7px;}
+.ev{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:11px 13px;
+  display:flex;gap:10px;align-items:center;font-size:13.5px;}
+.ev .dot{width:8px;height:8px;border-radius:50%;flex:0 0 8px;}
+.ev .tx{flex:1;line-height:1.45;}
+.ev .tm{font-size:11.5px;color:var(--muted);white-space:nowrap;}
+.empty{background:var(--card);border:1px dashed var(--line);border-radius:16px;padding:26px 18px;
+  text-align:center;color:var(--muted);font-size:13.5px;line-height:1.6;}
+.warnbox{background:#2a1f10;border:1px solid #5c4520;color:#f0d9a8;border-radius:14px;
+  padding:13px 15px;margin-bottom:16px;font-size:13px;line-height:1.6;}
+.warnbox b{color:#ffd98a;}
+
+@media(max-width:380px){
+  .front h2{font-size:23px;} .sheet li{font-size:15px;}
+  .star{width:48px;height:48px;font-size:22px;} .stars{gap:9px;}
+  .hero h2{font-size:23px;} .tile .vl{font-size:24px;}
+}
+@media(min-width:600px){ .fc{min-height:470px;} .tiles{grid-template-columns:repeat(4,1fr);} }
+</style>
+</head>
+<body>
+<div class="nojs" id="nojs">
+  ⚠️ หน้านี้ต้องเปิดด้วยเบราว์เซอร์จริง (Safari / Chrome) ถึงจะกดได้<br>
+  <small>ถ้าเปิดจากแอปอ่านไฟล์หรือพรีวิวในแชท ให้กดแชร์ → “เปิดใน Safari” / “Open in Browser”</small>
+</div>
+<div class="wrap">
+
+  <div class="topbar hidden" id="topbar">
+    <button class="backbtn" id="back">←</button>
+    <h1 id="title">Recall</h1>
+    <div class="counter hide" id="counter">0 / 0</div>
+  </div>
+  <div class="prog hide" id="prog"><i id="progbar"></i></div>
+
+  <!-- ============ LOGIN ============ -->
+  <div id="login">
+    <div class="login">
+      <div class="logo">🧠</div>
+      <h2>Recall</h2>
+      <p>ระเบียบวิธีวิจัยทางบริบาลเภสัชกรรม</p>
+      <div class="field">
+        <input id="nameIn" type="text" placeholder="พิมพ์ชื่อของคุณ" autocomplete="off"
+               autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go">
+      </div>
+      <div class="err" id="loginErr"></div>
+      <button class="btn accent" id="loginBtn">เข้าสู่ระบบ</button>
+      <div class="who">
+        <div class="whochip" data-fill="Euro"><b>Euro</b>โหมดผู้เรียน</div>
+        <div class="whochip" data-fill="IN"><b>IN</b>หลังบ้าน</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ HOME (learner) ============ -->
+  <div id="home" class="hidden">
+    <div class="hero">
+      <h2 id="greet">สวัสดี Euro 👋</h2>
+      <p>ทบทวนแบบ active recall · เลือกโหมดที่อยากเล่น</p>
+    </div>
+    <div class="menu">
+      <button class="mcard" data-act="flash">
+        <div class="ic">🃏</div><div class="go">›</div>
+        <h3>Flash Card</h3>
+        <p>เห็น Keyword → นึกเอง → พลิกดู Point สำคัญ แล้วให้คะแนนตัวเอง จำได้น้อยจะโผล่มาก่อนในรอบถัดไป</p>
+        <div class="statrow">
+          <span class="chip">รอบละ 5–7 ใบ</span>
+          <span class="chip" id="deckcount">— ใบ</span>
+          <span class="chip hot" id="weakchip">ยังไม่มีสถิติ</span>
+        </div>
+      </button>
+      <button class="mcard" data-act="quiz">
+        <div class="ic">✍️</div><div class="go">›</div>
+        <h3>Recall Quiz</h3>
+        <p>คำถามจากเอกสารการสอน ตอบแล้วเฉลยทันที พร้อมคำอธิบายว่าทำไมข้อนั้นถูก/ผิด</p>
+        <div class="statrow">
+          <span class="chip">รอบละ 8 ข้อ</span>
+          <span class="chip" id="qcount">— ข้อ</span>
+          <span class="chip ok" id="accchip">ยังไม่มีสถิติ</span>
+        </div>
+      </button>
+    </div>
+    <button class="btn ghost" data-act="logout" style="margin-top:22px">ออกจากระบบ</button>
+  </div>
+
+  <!-- ============ FLASHCARD ============ -->
+  <div id="flash" class="hidden">
+    <div class="stage"><div class="fc" id="fc">
+      <div class="face front"><div class="tag" id="fcTag"></div><h2 id="fcFront"></h2></div>
+      <div class="face back"><div class="sheet"><div class="kw" id="fcKw"></div><ul id="fcBack"></ul></div></div>
+    </div></div>
+    <p class="hintline" id="fcHint">แตะเพื่อพลิกการ์ด</p>
+    <div class="rate hidden" id="rateBox">
+      <p>ตอบถูกแค่ไหน ลองให้คะแนนตัวเองหน่อย</p>
+      <div class="stars" id="stars"></div>
+      <div class="ratelabel" id="rateLabel"></div>
+    </div>
+    <button class="btn primary" id="fcNext" disabled>ถัดไป</button>
+  </div>
+
+  <!-- ============ QUIZ ============ -->
+  <div id="quiz" class="hidden">
+    <div class="qhead">
+      <div class="no" id="qNo"></div>
+      <div class="topic" id="qTopic"></div>
+      <h3 id="qText"></h3>
+      <div class="multi hidden" id="qMulti">เลือกได้มากกว่า 1 ข้อ</div>
+    </div>
+    <div class="opts" id="qOpts"></div>
+    <div class="exp hidden" id="qExp"></div>
+    <button class="btn accent" id="qBtn">ตรวจคำตอบ</button>
+  </div>
+
+  <!-- ============ RESULT ============ -->
+  <div id="result" class="hidden">
+    <div class="result">
+      <div class="sub" id="rTop"></div>
+      <div class="big" id="rBig"></div>
+      <div class="sub" id="rSub"></div>
+      <div class="revlist" id="rList"></div>
+      <button class="btn primary" data-act="replay">เล่นอีกรอบ</button>
+      <button class="btn ghost" data-act="home">กลับหน้าแรก</button>
+    </div>
+  </div>
+
+  <!-- ============ ADMIN ============ -->
+  <div id="admin" class="hidden">
+    <div class="warnbox hidden" id="adminWarn"></div>
+    <div class="live">
+      <span class="pulse" id="pulse"></span>
+      <b id="liveTxt">ยังไม่มีข้อมูล</b>
+      <span id="liveTime"></span>
+    </div>
+
+    <div class="tiles">
+      <div class="tile"><div class="lb">การ์ดที่ทวนแล้ว</div><div class="vl" id="tCards">0<small>/0</small></div><div class="sb" id="tCardsSub">—</div></div>
+      <div class="tile"><div class="lb">ค่าเฉลี่ยความจำ</div><div class="vl" id="tAvg">—</div><div class="sb" id="tAvgSub">จาก 5 ดาว</div></div>
+      <div class="tile"><div class="lb">ควิซถูก</div><div class="vl" id="tAcc">—</div><div class="sb" id="tAccSub">—</div></div>
+      <div class="tile"><div class="lb">เล่นไปแล้ว</div><div class="vl" id="tSess">0<small> รอบ</small></div><div class="sb" id="tSessSub">—</div></div>
+    </div>
+
+    <div class="sec">
+      <h3>ใบที่ยังไม่แน่น</h3>
+      <p class="cap">เรียงจากจำได้น้อยสุด — ใบพวกนี้ระบบจะดันมาต้น ๆ ให้เองรอบหน้า</p>
+      <div id="weakList"></div>
+    </div>
+
+    <div class="sec">
+      <h3>ความแม่นควิซ รายหัวข้อ</h3>
+      <p class="cap">สัดส่วนข้อที่ตอบถูก แยกตามหัวข้อ</p>
+      <div id="topicList"></div>
+    </div>
+
+    <div class="sec">
+      <h3>ความเคลื่อนไหวล่าสุด</h3>
+      <p class="cap">อัปเดตสดทันทีที่ยูโรกด</p>
+      <div class="feed" id="feed"></div>
+    </div>
+
+    <button class="btn ghost" data-act="logout">ออกจากระบบ</button>
+  </div>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script>
+/* =========================================================
+   ⚙️  FIREBASE CONFIG  — วางค่าจาก Firebase Console ตรงนี้
+   ถ้ายังไม่ได้ตั้งค่า แอปจะทำงานแบบ "เครื่องใครเครื่องมัน"
+   (เล่นได้ปกติ แต่หลังบ้านจะไม่เห็นข้อมูล)
+   ========================================================= */
+const FIREBASE_CONFIG = {
+  apiKey:       "PASTE_API_KEY",
+  authDomain:   "PASTE_PROJECT.firebaseapp.com",
+  databaseURL:  "PASTE_DATABASE_URL",
+  projectId:    "PASTE_PROJECT_ID",
+  storageBucket:"PASTE_PROJECT.appspot.com",
+  appId:        "PASTE_APP_ID"
+};
+const LEARNER = "euro";   // ชื่อที่พิมพ์แล้วเข้าโหมดผู้เรียน
+const ADMIN   = "in";     // ชื่อที่พิมพ์แล้วเข้าหลังบ้าน
+
+const DECK = [
+ {t:"คุณภาพงานวิจัย", k:"Internal Validity", en:"ความตรงภายใน", p:[
+   "มั่นใจว่า <b>เหตุ→ผล</b> ที่พบ อธิบายด้วยปัจจัยอื่นไม่ได้",
+   "เป็น error ที่เกิด <b>ภายในการออกแบบวิจัย</b> เอง",
+   "หัวใจของงานทดลอง โดยเฉพาะ RCT",
+   "แก้: control group · <b>randomization</b> · blinding"]},
+ {t:"คุณภาพงานวิจัย", k:"History", en:"ภัยคุกคาม — กลุ่มเดียว", p:[
+   "เหตุการณ์ภายนอก <b>ที่ไม่เกี่ยวกับ intervention</b> แทรกเข้ามาระหว่างศึกษา",
+   "ยิ่งศึกษายาว ยิ่งเสี่ยง",
+   "เช่น ทดลองโปรแกรมเลิกบุหรี่ แล้วรัฐขึ้นภาษีบุหรี่พอดี",
+   "แก้: เพิ่ม <b>control group</b> ที่เจอเหตุการณ์เดียวกัน"]},
+ {t:"คุณภาพงานวิจัย", k:"Maturation", en:"ภัยคุกคาม — กลุ่มเดียว", p:[
+   "ผลเปลี่ยน <b>เพราะเวลาผ่านไป</b> ไม่ใช่เพราะ intervention",
+   "ยาว = โตขึ้น/โรคหายเอง · สั้น = เหนื่อย เบื่อ หิว",
+   "แก้: control group + จำกัดระยะติดตาม"]},
+ {t:"คุณภาพงานวิจัย", k:"Instrumentation", en:"ภัยคุกคาม — กลุ่มเดียว", p:[
+   "เครื่องมือ/วิธีวัดใน <b>pre-test กับ post-test ไม่เหมือนกัน</b>",
+   "รวมถึงเครื่องมือเสื่อม ไม่ calibrate หรือเปลี่ยนคนวัด",
+   "เกณฑ์ให้คะแนนของผู้ประเมินเปลี่ยนไป",
+   "แก้: ใช้เครื่องมือเดียวกันตลอด · standardize · ฝึกผู้เก็บข้อมูล"]},
+ {t:"คุณภาพงานวิจัย", k:"Testing", en:"ภัยคุกคาม — กลุ่มเดียว", p:[
+   "การทำ pre-test <b>ไปมีผลต่อคะแนน post-test</b>",
+   "= practice effect / learning effect (จำข้อสอบได้)",
+   "แก้: เว้นระยะให้นานพอ · แบบวัดคู่ขนาน · <b>ปิดบังวัตถุประสงค์</b>"]},
+ {t:"คุณภาพงานวิจัย", k:"Selection Bias", en:"ภัยคุกคาม — หลายกลุ่ม", p:[
+   "สองกลุ่ม <b>ไม่เท่าเทียมกันตั้งแต่ baseline</b>",
+   "เกิดบ่อยเมื่อให้ผู้เข้าร่วมเลือกกลุ่มเอง",
+   "เชื่อมกับ confounder โดยตรง",
+   "แก้: <b>Randomization</b> · eligibility criteria · matching"]},
+ {t:"คุณภาพงานวิจัย", k:"Regression to the mean", en:"ภัยคุกคาม — หลายกลุ่ม", p:[
+   "คนคะแนน <b>สุดขั้ว</b> ครั้งแรก ครั้งถัดไปจะขยับเข้าค่ากลาง",
+   "เป็น <b>ปรากฏการณ์ทางสถิติ</b> ไม่ใช่ผลของ treatment",
+   "เสี่ยงเมื่อคัดคนเข้าวิจัยจากค่าสุดขั้ว",
+   "แก้: control group · วัด baseline หลายครั้งแล้วเฉลี่ย"]},
+ {t:"คุณภาพงานวิจัย", k:"Social interaction", en:"ภัยคุกคาม — หลายกลุ่ม", p:[
+   "ผู้เข้าร่วมต่างกลุ่ม <b>คุยกัน (compare notes)</b>",
+   "ผลตามมา: เดาวัตถุประสงค์ออก / น้อยใจที่ไม่ได้ treatment",
+   "แก้: <b>Blinding</b> · แยกกลุ่ม · cluster randomization"]},
+ {t:"คุณภาพงานวิจัย", k:"Attrition", en:"ภัยคุกคาม — หลายกลุ่ม", p:[
+   "ผู้เข้าร่วม <b>หลุดออกก่อนจบ (dropout)</b>",
+   "อันตรายเมื่อหลุดออก <b>ไม่สุ่ม</b> เช่น คนอาการแย่ลงออกหมด",
+   "ทำลายความเท่าเทียมแม้ randomize มาแล้ว",
+   "แก้: เผื่อ sample size · ระบบติดตาม · <b>intention-to-treat</b>"]},
+ {t:"คุณภาพงานวิจัย", k:"External Validity", en:"ความตรงภายนอก", p:[
+   "<b>generalize</b> ผลไปคน/สถานที่/เวลาอื่นได้แค่ไหน",
+   "ต่ำ = ใช้ได้เฉพาะบริบทแคบของงานนั้น",
+   "งานเชิงคุณภาพเรียกว่า <b>Transferability</b>",
+   "แก้: Replication · Field experiment · Probability sampling"]},
+ {t:"คุณภาพงานวิจัย", k:"Sampling Bias", en:"ภัยคุกคาม — External", p:[
+   "ตัวอย่าง <b>ไม่เป็นตัวแทนของ target population</b>",
+   "มักมาจาก non-probability sampling เช่น convenience",
+   "รวมถึง volunteer bias / non-response bias",
+   "แก้: <b>Probability sampling</b>"]},
+ {t:"คุณภาพงานวิจัย", k:"Experimenter Effect", en:"ภัยคุกคาม — External", p:[
+   "ลักษณะ/ท่าที/ความคาดหวังของ <b>ผู้วิจัย</b> ส่งผลโดยไม่ตั้งใจ",
+   "ผลผูกกับ “ผู้วิจัยคนนี้” คนอื่นทำซ้ำไม่ได้ผลเหมือน",
+   "แก้: blinding ผู้เก็บข้อมูล · standardize สคริปต์"]},
+ {t:"คุณภาพงานวิจัย", k:"Hawthorne Effect", en:"ภัยคุกคาม — External", p:[
+   "เปลี่ยนพฤติกรรม <b>เพราะรู้ตัวว่ากำลังถูกศึกษา</b>",
+   "ผลในงานวิจัยดีเกินจริง พอใช้จริงไม่ได้ผลเท่านั้น",
+   "แก้: <b>Field experiment</b> · blinding · ยืดระยะเวลาศึกษา"]},
+ {t:"คุณภาพงานวิจัย", k:"Aptitude-treatment", en:"ภัยคุกคาม — External", p:[
+   "เกิด <b>interaction</b> ระหว่างคุณลักษณะกลุ่ม × ตัวแปรระดับบุคคล",
+   "แปลว่า treatment ได้ผล <b>เฉพาะคนบางลักษณะ</b>",
+   "เช่น โปรแกรมได้ผลเฉพาะคนการศึกษาสูง",
+   "แก้: วิเคราะห์ subgroup · ระบุกลุ่มเป้าหมายให้ชัด"]},
+ {t:"คุณภาพงานวิจัย", k:"Situation Effect", en:"ภัยคุกคาม — External", p:[
+   "บริบทแวดล้อมจำกัดการนำผลไปใช้",
+   "ได้แก่ <b>setting · time of day · location</b> · บรรยากาศเก็บข้อมูล",
+   "แก้: ทำซ้ำหลาย setting · multi-center · รายงานบริบทละเอียด"]},
+ {t:"คุณภาพงานวิจัย", k:"Statistical Validity", en:"ความตรงเชิงสถิติ", p:[
+   "เลือก <b>สถิติถูกวิธี</b> + <b>assumption ครบ</b>",
+   "ละเมิด assumption → ผล <b>invalid / non-sense</b>",
+   "ตัวอย่าง: หาค่าเฉลี่ย “เชื้อชาติ” = 1.9 → ไม่มีความหมาย เพราะเป็น nominal"]},
+ {t:"คุณภาพงานวิจัย", k:"ระดับการวัด 4 ระดับ", en:"Levels of Measurement", p:[
+   "<b>Nominal</b> แบ่งกลุ่ม · <b>Ordinal</b> +เรียงลำดับ",
+   "<b>Interval</b> +ระยะห่างเท่ากัน · <b>Ratio</b> +ศูนย์แท้",
+   "Nominal/Ordinal = discrete · Interval/Ratio = continuous",
+   "<b>แปลงจากสูงไปต่ำได้ แต่ย้อนกลับไม่ได้</b>"]},
+ {t:"คุณภาพงานวิจัย", k:"Confounder", en:"ตัวแปรกวน", p:[
+   "คุณสมบัติ: สัมพันธ์กับโรค + สัมพันธ์กับ exposure + <b>ไม่ใช่ผลของ exposure</b>",
+   "คุมด้วย: eligibility criteria · matching · randomization",
+   "และ stratified analysis · <b>multivariate (ANCOVA)</b>"]},
+
+ {t:"คุณภาพเครื่องมือวัด", k:"Reliability", en:"ความเที่ยง = precision", p:[
+   "วัดซ้ำ <b>ได้ผลเหมือนเดิม</b> (ถ้าสิ่งที่วัดยังไม่เปลี่ยน)",
+   "= consistency / dependability",
+   "ทำได้ง่ายกว่า validity และเป็น <b>เงื่อนไขจำเป็นของ validity</b>",
+   "แบ่งเป็น <b>Stability</b> (ข้ามเวลา) และ <b>Equivalence</b> (ภายในฉบับ)"]},
+ {t:"คุณภาพเครื่องมือวัด", k:"Test-Retest", en:"Stability", p:[
+   "วัด <b>กลุ่มเดิม 2 ครั้ง เว้นระยะเวลา</b> แล้วดูความสอดคล้อง",
+   "ระยะห่างต้อง <b>นานพอไม่ให้จำ</b> แต่ <b>สั้นพอที่สิ่งที่วัดยังไม่เปลี่ยน</b>",
+   "สถิติ: correlation หรือ <b>ICC</b>",
+   "ICC &gt; 0.75 = very good to excellent"]},
+ {t:"คุณภาพเครื่องมือวัด", k:"เกณฑ์ ICC", en:"Colton, 1974", p:[
+   "&lt; 0.25 = poor",
+   "0.25–0.50 = fair",
+   "0.50–0.75 = moderate to good",
+   "<b>&gt; 0.75 = very good to excellent</b>"]},
+ {t:"คุณภาพเครื่องมือวัด", k:"Equivalence", en:"Internal consistency", p:[
+   "ใช้เมื่อมี <b>multiple indicators</b> วัด construct เดียว",
+   "ควรดู <b>แยกราย domain</b> ไม่ใช่รวมทั้งฉบับ",
+   "วิธีตรวจ: <b>Split-half</b> · <b>Cronbach's alpha</b>",
+   "ชนิดพิเศษ: inter-rater · between-place administrations"]},
+ {t:"คุณภาพเครื่องมือวัด", k:"Cronbach's Alpha", en:"ค่า 0–1", p:[
+   "เทียบระดับ <b>กลุ่ม → α &gt; 0.70</b>",
+   "เทียบระดับ <b>บุคคล → α &gt; 0.90</b>",
+   "α <b>ขึ้นกับจำนวนข้อ</b> — ข้อยิ่งมาก α ยิ่งสูงเอง",
+   "จึงไม่ควรตีความว่า α สูง = เครื่องมือดีเสมอไป"]},
+ {t:"คุณภาพเครื่องมือวัด", k:"Split-half", en:"Equivalence", p:[
+   "แบ่งข้อคำถามเป็น <b>2 ครึ่ง</b> เช่น ข้อคู่–ข้อคี่",
+   "หา <b>สหสัมพันธ์ระหว่างสองครึ่ง</b>",
+   "ถ้าวัดสิ่งเดียวกันจริง คะแนนควรสอดคล้องสูง"]},
+ {t:"คุณภาพเครื่องมือวัด", k:"Validity", en:"ความตรง = accuracy", p:[
+   "วัดได้ <b>ตรงกับสิ่งที่ตั้งใจจะวัด</b>",
+   "= ความสอดคล้องระหว่าง <b>conceptual</b> กับ <b>operational definition</b>",
+   "<b>ทำยากกว่า reliability</b> · <b>reliable ไม่การันตี valid</b>",
+   "4 ชนิด: Face · Content · Criterion · Construct"]},
+ {t:"คุณภาพเครื่องมือวัด", k:"Face Validity", en:"ชนิดของ Validity", p:[
+   "อาศัย <b>การตัดสินของผู้อื่น</b> ดูแบบผิวเผิน",
+   "เป็นรูปแบบที่ <b>ง่ายและอ่อนที่สุด</b>",
+   "มักตรวจกับ <b>กลุ่มตัวอย่าง/ผู้ใช้จริง</b>"]},
+ {t:"คุณภาพเครื่องมือวัด", k:"Content Validity", en:"ชนิดของ Validity", p:[
+   "ครอบคลุม <b>ความหมายทั้งหมด</b> ของ construct",
+   "เป็น <b>ชนิดพิเศษของ face validity</b>",
+   "ตัดสินโดย <b>ผู้เชี่ยวชาญ</b> (ไม่ใช่กลุ่มตัวอย่าง)",
+   "เครื่องมือ: <b>IOC</b> และ <b>CVI</b>"]},
+ {t:"คุณภาพเครื่องมือวัด", k:"IOC", en:"Item-Objective Congruence", p:[
+   "ความสอดคล้อง <b>ข้อคำถาม ↔ วัตถุประสงค์</b>",
+   "ผู้เชี่ยวชาญให้คะแนน <b>+1 / 0 / −1</b>",
+   "+1 สอดคล้อง · 0 ไม่แน่ใจ · −1 ไม่สอดคล้อง",
+   "เฉลี่ยรายข้อ แล้วคัด/ปรับข้อที่ค่าต่ำ"]},
+ {t:"คุณภาพเครื่องมือวัด", k:"CVI", en:"Content Validity Index", p:[
+   "<b>สัดส่วนผู้เชี่ยวชาญ</b> ที่ให้คะแนนในระดับยอมรับได้",
+   "<b>I-CVI</b> = รายข้อ · <b>S-CVI</b> = ทั้งฉบับ",
+   "ใช้ตัดสินว่าจะเก็บ ปรับ หรือตัดข้อนั้นทิ้ง"]},
+ {t:"คุณภาพเครื่องมือวัด", k:"Criterion Validity", en:"ชนิดของ Validity", p:[
+   "สอดคล้องกับ <b>เกณฑ์ภายนอก / gold standard</b> ที่มีอยู่ก่อน",
+   "<b>Concurrent</b> = เทียบเครื่องมือเดิม ณ เวลาเดียวกัน",
+   "<b>Predictive</b> = ทำนายผลลัพธ์ในอนาคตได้"]},
+ {t:"คุณภาพเครื่องมือวัด", k:"Construct Validity", en:"ชนิดของ Validity", p:[
+   "ใช้เมื่อมี <b>multiple indicators</b> — ผลต้อง consistent ตามทฤษฎีทำนาย",
+   "<b>Convergent</b> = สิ่งที่ควรเหมือน → correlation สูง",
+   "<b>Discriminant</b> = สิ่งที่ควรต่าง → correlation ต่ำ"]},
+ {t:"คุณภาพเครื่องมือวัด", k:"วิธีเพิ่ม Reliability", en:"4 ข้อ", p:[
+   "<b>Clearly conceptualize</b> นิยาม construct ให้ชัด",
+   "<b>Increase level of measurement</b> วัดให้ละเอียดขึ้น",
+   "<b>Use multiple indicators</b> หลายตัวชี้วัดต่อ construct",
+   "<b>Use pretests</b> ทดลองใช้ก่อนเก็บจริง"]},
+
+ {t:"ความคลาดเคลื่อน", k:"X = T + S + R", en:"สมการความคลาดเคลื่อน", p:[
+   "<b>X</b> = ค่าที่วัดได้ · <b>T</b> = ค่าจริง (true construct)",
+   "<b>S</b> = Systemic error (bias) — ป้องกันได้",
+   "<b>R</b> = Random error — กำจัดไม่ได้ แต่กระจายได้"]},
+ {t:"ความคลาดเคลื่อน", k:"Systemic Error", en:"S — bias", p:[
+   "<b>ป้องกันได้</b> · บิดเบือนไปในทิศทางที่คาดเดาได้",
+   "เป็น <b>หัวใจของ reliability และ validity</b>",
+   "<b>ไม่ขึ้นกับขนาดตัวอย่าง</b> — เพิ่ม n เท่าไรก็ไม่หาย",
+   "มาจาก: คำถามกำกวม · ผู้สัมภาษณ์ชี้นำ · แปลเครื่องมือไม่ได้มาตรฐาน"]},
+ {t:"ความคลาดเคลื่อน", k:"Random Error", en:"R", p:[
+   "สุ่มและ <b>คาดเดาไม่ได้</b> · <b>กำจัดให้หมดไม่ได้</b>",
+   "แต่กระจายให้เท่ากันทุกกลุ่มได้ด้วย <b>random selection / allocation</b>",
+   "<b>ขึ้นกับขนาดตัวอย่าง</b> — คำนวณ n ให้พอเพื่อลด error",
+   "เช่น แรงจูงใจ บุคลิกภาพ ทัศนคติ อารมณ์ ของผู้ป่วย/ผู้รักษา"]},
+ {t:"ความคลาดเคลื่อน", k:"Sampling Error", en:"ความคลาดเคลื่อนจากการสุ่ม", p:[
+   "มาจาก 2 แหล่ง: <b>bias selection</b> และ <b>random error (n ไม่พอ)</b>",
+   "ตัวบ่งชี้: <b>SD และ 95% CI</b>",
+   "Target population ↔ Population sampled ต้องมีลักษณะเหมือนกัน",
+   "Sample ดู 2 เรื่อง: <b>sample size</b> + <b>sampling technique</b>"]},
+ {t:"ความคลาดเคลื่อน", k:"Probability Sampling", en:"4 แบบ", p:[
+   "ทุกคน <b>มีโอกาสถูกเลือกที่คำนวณได้</b> → generalize ได้",
+   "แก้ <b>sampling bias</b> เพิ่ม <b>external validity</b>",
+   "<b>Simple · Systematic · Stratified · Cluster</b>"]},
+ {t:"ความคลาดเคลื่อน", k:"Simple Random", en:"Probability", p:[
+   "“Select people based on a <b>true random procedure</b>”",
+   "ทุกคนมีโอกาสถูกเลือก <b>เท่ากัน</b>",
+   "ต้องมี <b>รายชื่อประชากรทั้งหมด (sampling frame)</b>"]},
+ {t:"ความคลาดเคลื่อน", k:"Systematic Random", en:"Probability", p:[
+   "“Select <b>every k-th person</b>”",
+   "สุ่มจุดเริ่ม แล้วเลือกคนที่ k, 2k, 3k…",
+   "ระวัง: ถ้ารายชื่อมีรูปแบบซ้ำเป็นคาบ จะเกิดอคติ"]},
+ {t:"ความคลาดเคลื่อน", k:"Stratified", en:"Probability", p:[
+   "แบ่งประชากรเป็น <b>ชั้น (strata)</b> ก่อน แล้ว <b>สุ่ม</b> ในแต่ละชั้น",
+   "มั่นใจว่ากลุ่มย่อยสำคัญมีตัวแทนครบ",
+   "<b>ต่างจาก Quota:</b> Stratified สุ่ม / Quota ไม่สุ่ม"]},
+ {t:"ความคลาดเคลื่อน", k:"Cluster", en:"Probability", p:[
+   "สุ่มเลือก <b>กลุ่มก้อนทั้งกลุ่ม</b> เช่น โรงเรียน โรงพยาบาล หมู่บ้าน",
+   "แล้วเก็บทุกคนในกลุ่มที่ถูกเลือก",
+   "ใช้เมื่อไม่มีรายชื่อรายบุคคล / ประชากรกระจายกว้าง",
+   "โยงกับ <b>cluster randomized trial</b>"]},
+ {t:"ความคลาดเคลื่อน", k:"Non-probability Sampling", en:"4 แบบ", p:[
+   "โอกาสถูกเลือก <b>ไม่เท่ากันหรือไม่ทราบค่า</b>",
+   "สะดวก ประหยัด แต่ <b>external validity ต่ำ</b>",
+   "<b>Convenience · Quota · Purposive · Snowball</b>"]},
+ {t:"ความคลาดเคลื่อน", k:"Convenience", en:"Non-probability", p:[
+   "“Select <b>anyone who is convenient</b>”",
+   "ยังต้องผ่าน <b>inclusion / exclusion criteria</b>",
+   "ใช้บ่อยที่สุดในงานวิจัยคลินิก แต่เสี่ยง bias สูงสุด"]},
+ {t:"ความคลาดเคลื่อน", k:"Quota", en:"Non-probability", p:[
+   "“Select anyone in <b>predetermined groups</b>”",
+   "กำหนดจำนวนแต่ละกลุ่มไว้ก่อน แล้วเก็บจนครบโควตา",
+   "เลือกใครในกลุ่มก็ได้ — <b>ไม่ได้สุ่ม</b>"]},
+ {t:"ความคลาดเคลื่อน", k:"Purposive", en:"Non-probability", p:[
+   "“Select anyone in <b>hard-to-find target population</b>”",
+   "ผู้วิจัย <b>เจาะจงเลือก</b> ด้วยวิจารณญาณ",
+   "ใช้กับ key informant · นิยมในงานวิจัยเชิงคุณภาพ"]},
+ {t:"ความคลาดเคลื่อน", k:"Snowball", en:"Non-probability", p:[
+   "“Select people <b>connected to one another</b>”",
+   "ผู้เข้าร่วมแนะนำคนต่อ ๆ ไปเป็นลูกโซ่",
+   "ใช้กับประชากรที่เข้าถึงยาก/ปกปิดตัวตน",
+   "ตัวอย่างกระจุกในเครือข่ายเดียว → bias สูง"]}
+];const QUIZ = [
+ {topic:"Internal Validity", q:"ผู้วิจัยติดตามโปรแกรมเลิกบุหรี่กลุ่มเดียวนาน 1 ปี ระหว่างนั้นรัฐบาลขึ้นภาษีบุหรี่ครั้งใหญ่ ภัยคุกคามข้อใดตรงที่สุด?",
+  o:["History","Maturation","Testing","Regression to the mean"], a:[0],
+  e:"History = เหตุการณ์ภายนอกที่ไม่เกี่ยวกับ intervention เกิดขึ้นระหว่างการศึกษาแล้วกระทบผลลัพธ์ เป็นภัยคุกคามของงานกลุ่มเดียวเพราะไม่มีกลุ่มเปรียบเทียบมาหักล้าง แก้ด้วยการเพิ่ม control group"},
+ {topic:"Internal Validity", q:"ข้อใดคือภัยคุกคามต่อ Internal Validity ที่พบใน <b>งานหลายกลุ่ม</b>? (เลือกทุกข้อที่ใช่)",
+  o:["Selection bias","Attrition","Maturation","Regression to the mean","Instrumentation"], a:[0,1,3],
+  e:"กลุ่มเดียว = History, Maturation, Instrumentation, Testing / หลายกลุ่ม = Selection bias, Regression to the mean, Social interaction, Attrition"},
+ {topic:"Internal Validity", q:"คะแนน post-test สูงขึ้นเพราะผู้เข้าร่วมจำข้อสอบจาก pre-test ได้ เรียกว่าอะไร และแก้อย่างไร?",
+  o:["Testing — เว้นระยะให้นานพอ ใช้แบบวัดคู่ขนาน และปิดบังวัตถุประสงค์","Instrumentation — calibrate เครื่องมือใหม่","Maturation — จำกัดระยะเวลาติดตาม","Hawthorne effect — ทำ field experiment"], a:[0],
+  e:"Testing (practice/learning effect) คือการทำ pre-test ไปมีผลต่อ post-test แก้ด้วยการเว้นระยะ ใช้แบบวัดคู่ขนาน และปิดบังวัตถุประสงค์ของการศึกษา"},
+ {topic:"Internal Validity", q:"ผู้วิจัยคัดเฉพาะผู้ที่มีความดันโลหิตสูงมากเข้าร่วม พอวัดซ้ำพบว่าความดันลดลงแม้ยังไม่ได้ให้ยา อธิบายด้วยอะไร?",
+  o:["Regression to the mean","Attrition","Selection bias","Social interaction"], a:[0],
+  e:"Regression to the mean เป็นปรากฏการณ์ทางสถิติ: คนที่ได้ค่าสุดขั้วในการวัดครั้งแรก มักได้ค่าใกล้ค่ากลางขึ้นในครั้งถัดไป ไม่ใช่ผลของ treatment แก้ด้วย control group และวัด baseline หลายครั้งแล้วเฉลี่ย"},
+ {topic:"Internal Validity", q:"วิธีแก้ภัยคุกคาม Internal Validity ของ<b>งานหลายกลุ่ม</b> ที่เป็นหลัก 2 อย่างคืออะไร?",
+  o:["Random assignment","Blinding","Replication","Probability sampling"], a:[0,1],
+  e:"งานหลายกลุ่มแก้ด้วย Random assignment + Blinding ส่วน Replication และ Probability sampling เป็นวิธีแก้ External Validity"},
+ {topic:"External Validity", q:"ผู้ป่วยกินยาตรงเวลาขึ้นมากเฉพาะช่วงที่รู้ว่าตัวเองอยู่ในงานวิจัย เรียกว่าอะไร?",
+  o:["Hawthorne effect","Experimenter effect","Situation effect","Aptitude-treatment interaction"], a:[0],
+  e:"Hawthorne effect = เปลี่ยนพฤติกรรมเพราะรู้ตัวว่าถูกสังเกต ทำให้ผลในงานวิจัยดีเกินจริง แก้ด้วย field experiment, blinding, หรือยืดระยะเวลาศึกษา"},
+ {topic:"External Validity", q:"งานวิจัยเชิงคุณภาพเรียกแนวคิดที่เทียบเท่า External Validity ว่าอะไร?",
+  o:["Transferability","Credibility","Dependability","Confirmability"], a:[0],
+  e:"External validity ในเชิงปริมาณ = Transferability ในงานวิจัยเชิงคุณภาพ คือความสามารถในการนำผลไปใช้กับบริบทอื่น"},
+ {topic:"External Validity", q:"โปรแกรมให้ความรู้ได้ผลดีเฉพาะกับผู้ที่มีการศึกษาสูง เอาไปใช้กับกลุ่มอื่นไม่ได้ ตรงกับภัยคุกคามข้อใด?",
+  o:["Aptitude-treatment interaction","Sampling bias","Situation effect","Experimenter effect"], a:[0],
+  e:"Aptitude-treatment คือ interaction ระหว่างคุณลักษณะของกลุ่มกับตัวแปรระดับบุคคล ทำให้ treatment ได้ผลเฉพาะคนบางลักษณะ แก้ด้วยการวิเคราะห์ subgroup และระบุกลุ่มเป้าหมายให้ชัด"},
+ {topic:"External Validity", q:"ข้อใดเป็นวิธีเพิ่ม External Validity? (เลือกทุกข้อที่ใช่)",
+  o:["Replication ทำซ้ำในกลุ่ม เวลา สถานที่อื่น","Field experiment ทดลองในสภาพจริง","Probability sampling","Blinding ผู้เข้าร่วม"], a:[0,1,2],
+  e:"External validity แก้ด้วย Replication, Field experiment และ Probability sampling — ส่วน Blinding เป็นเครื่องมือหลักของ Internal validity (แม้จะช่วยลด Hawthorne ได้ด้วย)"},
+ {topic:"Statistical Validity", q:"ผู้วิจัยโค้ดเชื้อชาติเป็น 1–4 แล้วรายงานว่า “ค่าเฉลี่ยเชื้อชาติของนักศึกษา = 1.9” ผิดตรงไหน?",
+  o:["ข้อมูลเป็น nominal จึงหาค่าเฉลี่ยไม่ได้ — ละเมิด assumption ของสถิติ","ควรใช้ค่ามัธยฐานแทนค่าเฉลี่ย","ขนาดตัวอย่างไม่พอ","ควรแปลงเป็น ratio ก่อน"], a:[0],
+  e:"Statistical validity คือเลือกสถิติถูกวิธีและ assumption ครบ ข้อมูล nominal แบ่งกลุ่มได้อย่างเดียว หาค่าเฉลี่ยแล้วไม่มีความหมาย (non-sense)"},
+ {topic:"ระดับการวัด", q:"ข้อใดถูกต้องเกี่ยวกับระดับการวัด?",
+  o:["แปลงจากระดับสูงไปต่ำได้ แต่ย้อนกลับไม่ได้ (ratio → interval → ordinal → nominal)","แปลงจากระดับต่ำไปสูงได้เสมอ","Ordinal เป็นข้อมูล continuous","Interval มีศูนย์แท้"], a:[0],
+  e:"Nominal/Ordinal = discrete, Interval/Ratio = continuous · Ratio เท่านั้นที่มีศูนย์แท้ · และแปลงจากสูงไปต่ำได้ทางเดียว"},
+ {topic:"Confounder", q:"คุณสมบัติของ confounder มีอะไรบ้าง? (เลือกทุกข้อที่ใช่)",
+  o:["สัมพันธ์กับโรค (outcome)","สัมพันธ์กับ exposure","ต้องไม่ใช่ผลของ exposure","ต้องเป็นตัวแปรที่วัดเป็น ratio scale"], a:[0,1,2],
+  e:"Confounder ต้องสัมพันธ์กับทั้ง outcome และ exposure และต้องไม่อยู่บนเส้นทางเหตุผล (ไม่ใช่ผลของ exposure) คุมได้ด้วย eligibility criteria, matching, randomization, stratified analysis, multivariate analysis"},
+ {topic:"Reliability", q:"ความสัมพันธ์ระหว่าง Reliability กับ Validity ข้อใดถูก?",
+  o:["Reliability เป็นเงื่อนไขจำเป็นของ Validity แต่ reliable สูงไม่รับประกันว่า valid","Validity เป็นเงื่อนไขจำเป็นของ Reliability","ถ้า reliable แล้วย่อม valid เสมอ","ทั้งสองไม่เกี่ยวข้องกัน"], a:[0],
+  e:"Reliability = precision, Validity = accuracy · เครื่องมืออาจให้ผลเดิมซ้ำ ๆ ได้ (reliable) แต่วัดไม่ตรงนิยาม construct (ไม่ valid) · reliability ทำได้ง่ายกว่าและเป็นเงื่อนไขจำเป็น"},
+ {topic:"Reliability", q:"การเว้นระยะเวลาใน Test-Retest ต้องเป็นอย่างไร?",
+  o:["นานพอที่ผู้ตอบจะไม่จำ แต่สั้นพอที่สิ่งที่วัดยังไม่เปลี่ยน","ยิ่งนานยิ่งดีเสมอ","ยิ่งสั้นยิ่งดีเสมอ","ไม่สำคัญ ขอแค่วัดกลุ่มเดิม"], a:[0],
+  e:"ถ้าสั้นเกินไปจะเกิด practice effect (จำได้) ถ้านานเกินไปสิ่งที่วัดอาจเปลี่ยนจริง ทำให้ตีความ ICC ผิด"},
+ {topic:"Reliability", q:"ค่า ICC เท่าใดจัดว่า very good to excellent ตามเกณฑ์ Colton (1974)?",
+  o:["> 0.75","0.50–0.75","0.25–0.50","< 0.25"], a:[0],
+  e:"< 0.25 poor · 0.25–0.50 fair · 0.50–0.75 moderate to good · > 0.75 very good to excellent"},
+ {topic:"Reliability", q:"งานวิจัยเปรียบเทียบผลระหว่าง<b>กลุ่ม</b> ควรใช้เกณฑ์ Cronbach's alpha เท่าใด?",
+  o:["α > 0.70","α > 0.90","α > 0.50","α > 0.95"], a:[0],
+  e:"เปรียบเทียบระดับกลุ่ม → α > 0.70 · เปรียบเทียบระดับบุคคล (ตัดสินใจรายคน) ต้องเข้มกว่า → α > 0.90"},
+ {topic:"Reliability", q:"ข้อควรระวังของ Cronbach's alpha คืออะไร?",
+  o:["ค่า α ขึ้นกับจำนวนข้อ — ข้อยิ่งมาก α ยิ่งสูงเอง จึงไม่ควรตีความว่า α สูง = เครื่องมือดีเสมอไป","α ใช้ได้เฉพาะกับข้อมูล nominal","α วัดความตรงไม่ใช่ความเที่ยง","α ต้องคำนวณรวมทุก domain เท่านั้น"], a:[0],
+  e:"นอกจากนี้ควรคำนวณ α แยกราย domain ไม่ใช่รวมทั้งฉบับ เพราะแต่ละ domain วัดคนละ construct"},
+ {topic:"Reliability", q:"ข้อใดคือวิธีเพิ่ม Reliability ตามเอกสาร? (เลือกทุกข้อที่ใช่)",
+  o:["Clearly conceptualize นิยาม construct ให้ชัด","Increase level of measurement","Use multiple indicators","Use pretests","Random assignment"], a:[0,1,2,3],
+  e:"4 วิธีเพิ่ม reliability คือ clearly conceptualize, increase level of measurement, use multiple indicators, use pretests · Random assignment เป็นเรื่องของ internal validity"},
+ {topic:"Validity", q:"Content Validity แตกต่างจาก Face Validity อย่างไร?",
+  o:["Content ตัดสินโดยผู้เชี่ยวชาญและดูความครอบคลุมทั้งหมดของ construct ส่วน Face ดูผิวเผินจากการตัดสินของผู้อื่น","Content ใช้กลุ่มตัวอย่างตัดสิน ส่วน Face ใช้ผู้เชี่ยวชาญ","Content ต้องมี gold standard เทียบ","ทั้งสองคือสิ่งเดียวกัน"], a:[0],
+  e:"Content validity เป็นชนิดพิเศษของ face validity ที่ตัดสินโดยผู้เชี่ยวชาญ ประเมินด้วย IOC และ CVI"},
+ {topic:"Validity", q:"ผู้เชี่ยวชาญให้คะแนนรายข้อเป็น +1 / 0 / −1 เพื่อดูความสอดคล้องระหว่างข้อคำถามกับวัตถุประสงค์ คือเครื่องมือใด?",
+  o:["IOC (Index of Item-Objective Congruence)","CVI","ICC","Cronbach's alpha"], a:[0],
+  e:"IOC: +1 = สอดคล้องแน่นอน, 0 = ไม่แน่ใจ, −1 = ไม่สอดคล้อง แล้วหาค่าเฉลี่ยรายข้อเพื่อคัดหรือปรับข้อที่ค่าต่ำ"},
+ {topic:"Validity", q:"I-CVI กับ S-CVI ต่างกันอย่างไร?",
+  o:["I-CVI คิดเป็นรายข้อ ส่วน S-CVI คิดทั้งฉบับ","I-CVI คิดทั้งฉบับ ส่วน S-CVI คิดรายข้อ","I-CVI ใช้กับผู้เชี่ยวชาญ ส่วน S-CVI ใช้กับกลุ่มตัวอย่าง","ทั้งสองใช้แทนกันได้"], a:[0],
+  e:"CVI คือสัดส่วนผู้เชี่ยวชาญที่ให้คะแนนในระดับที่ยอมรับได้ · I = item-level, S = scale-level"},
+ {topic:"Validity", q:"การนำแบบวัดคุณภาพชีวิตตัวใหม่ไปเทียบกับ EQ-5D-5L ที่เก็บในช่วงเวลาเดียวกัน เป็น validity แบบใด?",
+  o:["Concurrent (Criterion validity)","Predictive (Criterion validity)","Convergent (Construct validity)","Content validity"], a:[0],
+  e:"Criterion validity ต้องมี gold standard อยู่ก่อน · เทียบ ณ เวลาเดียวกัน = concurrent · เทียบกับผลลัพธ์ในอนาคต = predictive"},
+ {topic:"Validity", q:"แบบวัดความเครียดตัวใหม่ ไม่ควรสัมพันธ์สูงกับแบบวัดความสามารถทางคณิตศาสตร์ — นี่คือหลักฐานของอะไร?",
+  o:["Discriminant validity","Convergent validity","Concurrent validity","Face validity"], a:[0],
+  e:"Construct validity แบ่ง 2 ทิศทาง: convergent = สิ่งที่ควรเหมือนต้อง correlation สูง, discriminant = สิ่งที่ควรต่างต้อง correlation ต่ำ"},
+ {topic:"Error", q:"ข้อใดถูกต้องเกี่ยวกับ Systemic error และ Random error?",
+  o:["Systemic error ป้องกันได้และไม่ขึ้นกับขนาดตัวอย่าง ส่วน Random error กำจัดไม่ได้แต่ขึ้นกับขนาดตัวอย่าง","ทั้งสองลดได้ด้วยการเพิ่มขนาดตัวอย่าง","Systemic error ลดได้ด้วยการเพิ่ม n","Random error ป้องกันได้ทั้งหมดด้วย blinding"], a:[0],
+  e:"X = T + S + R · S (bias) เพิ่ม n เท่าไรก็ไม่หาย ต้องแก้ที่การออกแบบ · R กำจัดหมดไม่ได้ แต่กระจายให้เท่ากันด้วย random selection/allocation และลดด้วยการคำนวณ sample size ให้พอ"},
+ {topic:"Error", q:"ข้อใดเป็นแหล่งที่มาของ Systemic error? (เลือกทุกข้อที่ใช่)",
+  o:["คำถามเขียนกำกวมทำให้คนส่วนใหญ่ตอบไปทางเดียวกัน","ผู้สัมภาษณ์ชี้นำให้ตอบแบบใดแบบหนึ่ง","กระบวนการแปลเครื่องมือข้ามภาษาที่ไม่ได้มาตรฐาน","อารมณ์ของผู้ป่วย ณ ขณะนั้น"], a:[0,1,2],
+  e:"อารมณ์ บุคลิกภาพ แรงจูงใจ ทัศนคติ เป็นตัวอย่างของ Random error เพราะเดาทิศทางไม่ได้"},
+ {topic:"Error", q:"ตัวบ่งชี้ (indicator) ของ Sampling error คืออะไร?",
+  o:["SD และ 95% CI","p-value และ effect size","ICC และ Cronbach's alpha","IOC และ CVI"], a:[0],
+  e:"Sampling error มาจาก bias selection และ random error (ขนาดตัวอย่างไม่พอ) โดยมี SD และ 95% CI เป็นตัวบ่งชี้"},
+ {topic:"Sampling", q:"Stratified sampling ต่างจาก Quota sampling อย่างไร?",
+  o:["Stratified สุ่มภายในแต่ละชั้น ส่วน Quota เลือกใครก็ได้จนครบโควตา (ไม่สุ่ม)","Stratified ไม่สุ่ม ส่วน Quota สุ่ม","ทั้งสองเป็น probability sampling","ทั้งสองเป็น non-probability sampling"], a:[0],
+  e:"ทั้งคู่แบ่งกลุ่มก่อนเหมือนกัน แต่ Stratified = probability (สุ่มในแต่ละชั้น) · Quota = non-probability (ไม่ได้สุ่ม)"},
+ {topic:"Sampling", q:"ข้อใดเป็น Probability sampling? (เลือกทุกข้อที่ใช่)",
+  o:["Simple random","Systematic","Stratified","Cluster","Purposive"], a:[0,1,2,3],
+  e:"Probability = Simple, Systematic, Stratified, Cluster · Non-probability = Convenience, Quota, Purposive, Snowball"},
+ {topic:"Sampling", q:"ผู้วิจัยต้องการศึกษาผู้ใช้สารเสพติดที่เข้าถึงยาก จึงให้ผู้เข้าร่วมคนแรกแนะนำเพื่อนต่อ ๆ ไป เป็นการสุ่มแบบใด และมีข้อจำกัดอะไร?",
+  o:["Snowball — ตัวอย่างมักกระจุกในเครือข่ายเดียวกัน ทำให้ bias สูง","Purposive — ผู้วิจัยเลือกเองด้วยวิจารณญาณ","Cluster — เก็บทุกคนในกลุ่มที่ถูกเลือก","Convenience — เลือกใครก็ได้ที่สะดวก"], a:[0],
+  e:"Snowball = “select people connected to one another” ใช้กับประชากรที่เข้าถึงยากหรือปกปิดตัวตน แต่ตัวอย่างจะกระจุกอยู่ในเครือข่ายเดียวกัน"},
+ {topic:"Sampling", q:"เมื่อไม่สามารถให้ intervention รายบุคคลได้ ต้องให้ทั้งโรงพยาบาล/ทั้งหมู่บ้าน ควรออกแบบเป็นอะไร?",
+  o:["Cluster randomized trial","Stratified randomization","Simple random sampling","Quota sampling"], a:[0],
+  e:"Cluster sampling คือสุ่มเลือกกลุ่มก้อนทั้งกลุ่มแล้วเก็บทุกคนในกลุ่มนั้น เชื่อมโยงกับ cluster randomized trial ซึ่งยังช่วยลด social interaction ระหว่างกลุ่มด้วย"},
+ {topic:"Sampling", q:"Target population กับ Population sampled ควรมีความสัมพันธ์อย่างไร?",
+  o:["Population sampled ต้องมีลักษณะเหมือน target population จึงจะ generalize ได้","Population sampled ต้องใหญ่กว่า target population","ทั้งสองต้องเป็นคนละกลุ่มเสมอ","ไม่จำเป็นต้องสัมพันธ์กันถ้า n มากพอ"], a:[0],
+  e:"ถ้า population sampled ต่างจาก target population จะเกิด sampling bias และ external validity ต่ำ · Sample เองต้องพิจารณา 2 เรื่อง คือ sample size และ sampling technique"},
+ {topic:"Validity", q:"ทำไม Validity จึงทำได้ยากกว่า Reliability?",
+  o:["เพราะ construct เป็นนามธรรม แต่ indicator ที่ใช้วัดเป็นรูปธรรมที่สังเกตได้ จึงไม่มีทางตรงกัน 100%","เพราะต้องใช้ผู้เชี่ยวชาญจำนวนมาก","เพราะต้องเก็บข้อมูล 2 ครั้ง","เพราะต้องใช้สถิติขั้นสูงเสมอ"], a:[0],
+  e:"Validity คือความสอดคล้องระหว่าง conceptual definition (นามธรรม) กับ operational definition (รูปธรรม) จึงไม่มีทางสมบูรณ์ 100%"}
+];
+/* =========================================================
+   STATE / HELPERS
+   ========================================================= */
+const $=id=>document.getElementById(id);
+const ROUND_MIN=5, ROUND_MAX=7, QUIZ_N=8;
+let role=null, view='login', db=null, online=false;
+let mem = DECK.map((_,i)=>({i:i, score:null, seen:0, last:0}));
+let quizAgg = {};        // topic -> {ok, n}
+let feedCache = [];      // recent events (admin)
+let sessCount = 0;
+
+const slug = s => s.replace(/[.#$/\[\]]/g,'').replace(/\s+/g,'_').slice(0,60);
+const store = {
+  get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} }
+};
+function timeAgo(ts){
+  if(!ts) return '—';
+  const s=Math.floor((Date.now()-ts)/1000);
+  if(s<10) return 'เมื่อกี้';
+  if(s<60) return s+' วิที่แล้ว';
+  if(s<3600) return Math.floor(s/60)+' นาทีที่แล้ว';
+  if(s<86400) return Math.floor(s/3600)+' ชม.ที่แล้ว';
+  return Math.floor(s/86400)+' วันที่แล้ว';
+}
+function clock(ts){
+  const d=new Date(ts);
+  return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+}
+
+/* =========================================================
+   FIREBASE
+   ========================================================= */
+function initFB(){
+  if(String(FIREBASE_CONFIG.apiKey).indexOf('PASTE')===0){ online=false; return; }
+  try{
+    firebase.initializeApp(FIREBASE_CONFIG);
+    db = firebase.database();
+    online = true;
+  }catch(e){ console.warn('firebase init failed',e); online=false; }
+}
+function fbSet(path,val){ if(online&&db) db.ref(path).set(val).catch(e=>console.warn(e)); }
+function fbPush(path,val){ if(online&&db) db.ref(path).push(val).catch(e=>console.warn(e)); }
+function touch(){ fbSet('progress/'+LEARNER+'/meta/lastActive', Date.now()); }
+
+/* ---- learner writes ---- */
+function logCard(cardIdx, score){
+  const c=DECK[cardIdx], id=slug(c.k), t=Date.now();
+  fbSet('progress/'+LEARNER+'/cards/'+id, {k:c.k, topic:c.t, score:score, seen:mem[cardIdx].seen, last:t});
+  fbPush('progress/'+LEARNER+'/feed', {type:'card', label:c.k, score:score, t:t});
+  touch();
+}
+function logQuiz(q, ok){
+  const t=Date.now();
+  fbPush('progress/'+LEARNER+'/quizlog', {topic:q.topic, ok:ok, t:t});
+  fbPush('progress/'+LEARNER+'/feed', {type:'quiz', label:q.topic, ok:ok, t:t});
+  touch();
+}
+function logSession(mode, n, score){
+  const t=Date.now();
+  fbPush('progress/'+LEARNER+'/sessions', {mode:mode, n:n, score:score, t:t});
+  fbPush('progress/'+LEARNER+'/feed', {type:'session', label:mode, score:score, n:n, t:t});
+  touch();
+}
+/* ---- learner reads own progress back (สลับเครื่องแล้วยังต่อได้) ---- */
+function loadMyProgress(cb){
+  if(!online||!db){ cb&&cb(); return; }
+  db.ref('progress/'+LEARNER+'/cards').once('value').then(sn=>{
+    const v=sn.val()||{};
+    DECK.forEach((c,i)=>{ const r=v[slug(c.k)]; if(r){ mem[i].score=r.score; mem[i].seen=r.seen||1; mem[i].last=r.last||0; } });
+    return db.ref('progress/'+LEARNER+'/quizlog').once('value');
+  }).then(sn=>{
+    const v=sn.val()||{}; quizAgg={};
+    Object.values(v).forEach(r=>{ quizAgg[r.topic]=quizAgg[r.topic]||{ok:0,n:0}; quizAgg[r.topic].n++; if(r.ok) quizAgg[r.topic].ok++; });
+    cb&&cb();
+  }).catch(e=>{ console.warn(e); cb&&cb(); });
+}
+
+/* =========================================================
+   NAV
+   ========================================================= */
+const VIEWS=['login','home','flash','quiz','result','admin'];
+function show(v){
+  view=v;
+  VIEWS.forEach(x=>$(x).classList.toggle('hidden',x!==v));
+  $('topbar').classList.toggle('hidden', v==='login');
+  $('back').classList.toggle('show', v==='flash'||v==='quiz');
+  $('prog').classList.toggle('hide', !(v==='flash'||v==='quiz'));
+  $('counter').classList.toggle('hide', !(v==='flash'||v==='quiz'));
+  $('title').textContent = v==='home'?'Recall': v==='flash'?'Flash Card': v==='quiz'?'Recall Quiz':
+                           v==='result'?'สรุปผล': v==='admin'?'หลังบ้าน · Euro':'Recall';
+  window.scrollTo(0,0);
+}
+function goHome(){ role==='admin'?show('admin'):(refreshHome(),show('home')); }
+function setProg(cur,total){
+  $('progbar').style.width=(total?Math.round(cur/total*100):0)+'%';
+  $('counter').textContent=cur+' / '+total;
+}
+function refreshHome(){
+  $('deckcount').textContent = DECK.length+' ใบ';
+  $('qcount').textContent = QUIZ.length+' ข้อ';
+  const weak = mem.filter(m=>m.score!==null && m.score<=2).length;
+  const done = mem.filter(m=>m.seen>0).length;
+  $('weakchip').textContent = done===0?'ยังไม่มีสถิติ':(weak>0?'ต้องทวนอีก '+weak+' ใบ':'ทวนแล้ว '+done+' ใบ · เคลียร์หมด');
+  let ok=0,n=0; Object.values(quizAgg).forEach(a=>{ok+=a.ok;n+=a.n;});
+  $('accchip').textContent = n===0?'ยังไม่มีสถิติ':'แม่น '+Math.round(ok/n*100)+'% ('+ok+'/'+n+')';
+}
+
+/* =========================================================
+   LOGIN
+   ========================================================= */
+function doLogin(){
+  const raw=$('nameIn').value.trim();
+  const v=raw.toLowerCase();
+  if(!v){ $('loginErr').textContent='พิมพ์ชื่อก่อนนะ'; return; }
+  if(v===LEARNER){ role='learner'; store.set('recall_role','learner'); enterLearner(); }
+  else if(v===ADMIN){ role='admin'; store.set('recall_role','admin'); enterAdmin(); }
+  else { $('loginErr').textContent='ไม่พบชื่อนี้ — ลองพิมพ์ Euro หรือ IN'; }
+}
+function enterLearner(){
+  $('loginErr').textContent='';
+  $('greet').textContent='สวัสดี Euro 👋';
+  loadMyProgress(()=>{ refreshHome(); });
+  refreshHome(); show('home'); touch();
+}
+function enterAdmin(){
+  $('loginErr').textContent='';
+  show('admin'); startAdmin();
+}
+function logout(){
+  role=null; store.del('recall_role');
+  $('nameIn').value=''; $('loginErr').textContent='';
+  if(adminRefs.length&&db){ adminRefs.forEach(r=>r.off()); adminRefs=[]; }
+  show('login');
+}
+
+/* =========================================================
+   FLASHCARD
+   ========================================================= */
+let round=[], idx=0, flipped=false, rated=null, roundLog=[];
+function pickRound(){
+  const w=m=> m.score===null?3 : m.score<=2?6 : m.score===3?3 : m.score===4?1.5 : 0.7;
+  const pool=mem.map(m=>({m, r:Math.random()/w(m)}));
+  pool.sort((a,b)=>a.r-b.r);
+  const n=ROUND_MIN+Math.floor(Math.random()*(ROUND_MAX-ROUND_MIN+1));
+  const picked=pool.slice(0,n).map(p=>p.m);
+  picked.sort((a,b)=>{ const s=x=>x.score===null?2.5:x.score; return s(a)-s(b); });
+  return picked;
+}
+function startFlash(){ round=pickRound(); idx=0; roundLog=[]; show('flash'); renderCard(); }
+function renderCard(){
+  const m=round[idx], c=DECK[m.i];
+  flipped=false; rated=null; flipLock=false;
+  /* รีเซ็ตการ์ดกลับด้านหน้าแบบไม่ให้เห็นอนิเมชันย้อน (ไม่งั้นจะเห็นเฉลยใบใหม่แวบหนึ่ง) */
+  const fcEl=$('fc');
+  fcEl.style.transition='none';
+  fcEl.classList.remove('flip');
+  void fcEl.offsetWidth;                 /* force reflow */
+  requestAnimationFrame(function(){ fcEl.style.transition=''; });
+  $('fcTag').textContent=c.t;
+  $('fcFront').innerHTML=c.k+'<span class="en">'+c.en+'</span>';
+  $('fcKw').textContent=c.k;
+  $('fcBack').innerHTML=c.p.map(x=>'<li>'+x+'</li>').join('');
+  $('rateBox').classList.add('hidden');
+  $('fcHint').textContent='แตะเพื่อพลิกการ์ด'; $('fcHint').classList.remove('hidden');
+  $('fcNext').disabled=true;
+  $('fcNext').textContent = idx===round.length-1?'จบรอบ':'ถัดไป';
+  renderStars(0); setProg(idx+1, round.length);
+}
+let flipLock=false;
+function flipCard(e){
+  /* กันกดโดนปุ่ม/ลิงก์ข้างในการ์ด แล้วการ์ดพลิกตาม */
+  if(e && e.target && e.target.closest && e.target.closest('button,a,input')) return;
+  if(flipLock) return;                 /* กันกดรัว ๆ ระหว่างอนิเมชัน */
+  flipLock=true; setTimeout(function(){ flipLock=false; }, 520);
+  flipped=!flipped;
+  $('fc').classList.toggle('flip',flipped);
+  if(flipped){
+    $('fcHint').classList.add('hidden');
+    $('rateBox').classList.remove('hidden');
+  }else{
+    $('fcHint').textContent='แตะเพื่อพลิกดูเฉลยอีกครั้ง';
+    $('fcHint').classList.remove('hidden');
+  }
+}
+const RATE_TXT=['','1 · จำไม่ได้เลย — จะเด้งมาต้น ๆ รอบหน้า','2 · เลือนราง — ยังต้องทวนบ่อย','3 · พอได้ — เจอเป็นระยะ','4 · จำได้ดี — ถี่น้อยลง','5 · แม่นมาก — ไปอยู่ท้าย ๆ'];
+function renderStars(v){
+  $('stars').innerHTML='';
+  for(let i=1;i<=5;i++){
+    const b=document.createElement('button');
+    b.className='star'+(i<=v?' on':''); b.textContent='★'; b.type='button';
+    b.addEventListener('click',e=>{e.stopPropagation(); rate(i);});
+    $('stars').appendChild(b);
+  }
+  $('rateLabel').textContent=RATE_TXT[v];
+}
+function rate(v){
+  rated=v; renderStars(v);
+  const m=round[idx]; m.score=v; m.seen++; m.last=Date.now();
+  logCard(m.i, v);
+  $('fcNext').disabled=false;
+}
+function nextCard(){
+  roundLog.push({k:DECK[round[idx].i].k, s:rated});
+  idx++;
+  if(idx>=round.length){ showFlashResult(); return; }
+  renderCard();
+}
+function showFlashResult(){
+  const avg=roundLog.reduce((a,b)=>a+(b.s||0),0)/roundLog.length;
+  logSession('flash', roundLog.length, Math.round(avg*10)/10);
+  $('rTop').textContent='จบรอบนี้แล้ว · '+roundLog.length+' ใบ';
+  $('rBig').textContent=avg.toFixed(1)+' / 5';
+  $('rSub').textContent = avg>=4.5?'แม่นมาก รอบหน้าจะสลับใบใหม่ให้':avg>=3.5?'ไปได้ดี ใบที่ยังไม่แน่นจะกลับมาก่อน':'ยังไม่แน่น — ใบเหล่านี้จะโผล่มาต้น ๆ รอบหน้า';
+  $('rList').innerHTML=roundLog.map(r=>{
+    const col=r.s<=2?'#e0503f':r.s===3?'#e8a33d':'#20c08a';
+    return '<div class="revitem"><span class="dot" style="background:'+col+'"></span><span style="flex:1">'+r.k+'</span><b>'+r.s+'★</b></div>';
+  }).join('');
+  lastMode='flash'; show('result');
+}
+
+/* =========================================================
+   QUIZ
+   ========================================================= */
+let qset=[], qi=0, qsel=[], qlocked=false, qlog=[];
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function startQuiz(){
+  qset=shuffle(QUIZ).slice(0,Math.min(QUIZ_N,QUIZ.length)).map(q=>{
+    const order=shuffle(q.o.map((t,i)=>i));
+    return Object.assign({},q,{_o:order.map(i=>q.o[i]), _a:order.map((oi,ni)=>q.a.indexOf(oi)>=0?ni:-1).filter(x=>x>=0)});
+  });
+  qi=0; qlog=[]; show('quiz'); renderQ();
+}
+function renderQ(){
+  const q=qset[qi]; qsel=[]; qlocked=false;
+  $('qNo').textContent='คำถามที่ '+(qi+1)+' จาก '+qset.length;
+  $('qTopic').textContent=q.topic;
+  $('qText').innerHTML=q.q;
+  $('qMulti').classList.toggle('hidden', q._a.length<2);
+  $('qExp').classList.add('hidden');
+  $('qBtn').textContent='ตรวจคำตอบ';
+  $('qOpts').innerHTML='';
+  q._o.forEach((t,i)=>{
+    const b=document.createElement('button');
+    b.className='opt'; b.type='button'; b.dataset.i=i;
+    b.innerHTML='<span class="bx"></span><span>'+t+'</span>';
+    b.addEventListener('click',()=>toggleOpt(i));
+    $('qOpts').appendChild(b);
+  });
+  setProg(qi+1, qset.length);
+}
+function toggleOpt(i){
+  if(qlocked) return;
+  const q=qset[qi];
+  if(q._a.length<2){ qsel=[i]; }
+  else { qsel.indexOf(i)>=0 ? qsel=qsel.filter(x=>x!==i) : qsel.push(i); }
+  Array.prototype.forEach.call($('qOpts').children,(el,n)=>el.classList.toggle('sel',qsel.indexOf(n)>=0));
+}
+function quizAction(){
+  if(!qlocked){
+    if(!qsel.length) return;
+    const q=qset[qi]; qlocked=true;
+    const ok = qsel.length===q._a.length && qsel.every(x=>q._a.indexOf(x)>=0);
+    Array.prototype.forEach.call($('qOpts').children,(el,n)=>{
+      el.classList.add('locked'); el.classList.remove('sel');
+      if(q._a.indexOf(n)>=0){ el.classList.add('correct'); el.querySelector('.bx').textContent='✓'; }
+      else if(qsel.indexOf(n)>=0){ el.classList.add('wrong'); el.querySelector('.bx').textContent='✕'; }
+    });
+    const e=$('qExp');
+    e.className='exp'+(ok?'':' miss');
+    e.innerHTML='<span class="lbl">'+(ok?'✓ ถูกต้อง':'✕ ยังไม่ใช่')+'</span>'+q.e;
+    e.classList.remove('hidden');
+    qlog.push({ok:ok, topic:q.topic});
+    quizAgg[q.topic]=quizAgg[q.topic]||{ok:0,n:0}; quizAgg[q.topic].n++; if(ok) quizAgg[q.topic].ok++;
+    logQuiz(q, ok);
+    $('qBtn').textContent = qi===qset.length-1?'ดูสรุปผล':'ข้อถัดไป';
+  } else {
+    qi++;
+    if(qi>=qset.length){ showQuizResult(); return; }
+    renderQ();
+  }
+}
+function showQuizResult(){
+  const c=qlog.filter(x=>x.ok).length;
+  logSession('quiz', qlog.length, c);
+  $('rTop').textContent='Recall Quiz · '+qlog.length+' ข้อ';
+  $('rBig').textContent=c+' / '+qlog.length;
+  const pct=c/qlog.length;
+  $('rSub').textContent = pct===1?'เต็ม! แม่นมาก':pct>=.75?'ดีมาก เหลืออีกนิดเดียว':pct>=.5?'ผ่านแล้ว ลองทวน flash card หัวข้อที่พลาด':'ลองกลับไปอ่านสรุปก่อนแล้วค่อยมาใหม่';
+  $('rList').innerHTML=qlog.map((r,i)=>
+    '<div class="revitem"><span class="dot" style="background:'+(r.ok?'#20c08a':'#e0503f')+'"></span>'+
+    '<span style="flex:1">ข้อ '+(i+1)+' · '+r.topic+'</span><b>'+(r.ok?'✓':'✕')+'</b></div>').join('');
+  lastMode='quiz'; show('result');
+}
+let lastMode='flash';
+function replay(){ lastMode==='flash'?startFlash():startQuiz(); }
+
+/* =========================================================
+   ADMIN DASHBOARD (realtime)
+   ========================================================= */
+let adminRefs=[], aCards={}, aQuiz=[], aSess=[], aFeed=[], aLast=0, tickTimer=null;
+function startAdmin(){
+  if(!online||!db){
+    $('adminWarn').classList.remove('hidden');
+    $('adminWarn').innerHTML='<b>ยังไม่ได้ต่อฐานข้อมูล</b><br>ตอนนี้ยังไม่ได้วางค่า Firebase ในไฟล์ index.html หลังบ้านจึงยังไม่เห็นข้อมูลของยูโร — ดูขั้นตอนใน README ของ repo';
+    renderAdmin(); return;
+  }
+  $('adminWarn').classList.add('hidden');
+  const base='progress/'+LEARNER+'/';
+  const r1=db.ref(base+'cards');    r1.on('value',s=>{ aCards=s.val()||{}; renderAdmin(); });
+  const r2=db.ref(base+'quizlog');  r2.on('value',s=>{ aQuiz=Object.values(s.val()||{}); renderAdmin(); });
+  const r3=db.ref(base+'sessions'); r3.on('value',s=>{ aSess=Object.values(s.val()||{}); renderAdmin(); });
+  const r4=db.ref(base+'feed').limitToLast(40); r4.on('value',s=>{ aFeed=Object.values(s.val()||{}); renderAdmin(); });
+  const r5=db.ref(base+'meta/lastActive'); r5.on('value',s=>{ aLast=s.val()||0; renderLive(); });
+  adminRefs=[r1,r2,r3,r4,r5];
+  if(tickTimer) clearInterval(tickTimer);
+  tickTimer=setInterval(renderLive,15000);
+}
+function renderLive(){
+  const act = aLast && (Date.now()-aLast < 3*60*1000);
+  $('pulse').classList.toggle('on', !!act);
+  $('liveTxt').textContent = !aLast ? 'ยังไม่มีข้อมูล' : (act?'ยูโรกำลังเล่นอยู่':'ยูโรออฟไลน์');
+  $('liveTime').textContent = aLast ? 'ล่าสุด '+timeAgo(aLast) : '';
+}
+function renderAdmin(){
+  renderLive();
+  const cards=Object.values(aCards);
+  const seen=cards.length;
+  $('tCards').innerHTML=seen+'<small>/'+DECK.length+'</small>';
+  $('tCardsSub').textContent = seen? Math.round(seen/DECK.length*100)+'% ของเด็ค' : 'ยังไม่เริ่ม';
+
+  const avg = seen? cards.reduce((a,b)=>a+(b.score||0),0)/seen : 0;
+  $('tAvg').textContent = seen? avg.toFixed(1) : '—';
+  $('tAvgSub').textContent = !seen?'จาก 5 ดาว': avg>=4?'แน่นดี':avg>=3?'พอใช้':'ยังต้องทวน';
+
+  const qok=aQuiz.filter(q=>q.ok).length, qn=aQuiz.length;
+  $('tAcc').textContent = qn? Math.round(qok/qn*100)+'%' : '—';
+  $('tAccSub').textContent = qn? qok+'/'+qn+' ข้อ' : 'ยังไม่ได้ทำควิซ';
+
+  $('tSess').innerHTML = aSess.length+'<small> รอบ</small>';
+  const f=aSess.filter(s=>s.mode==='flash').length;
+  $('tSessSub').textContent = aSess.length? ('flash '+f+' · quiz '+(aSess.length-f)) : '—';
+
+  // weak cards
+  const weak=cards.filter(c=>c.score<=3).sort((a,b)=>a.score-b.score||b.last-a.last).slice(0,8);
+  $('weakList').innerHTML = !seen
+    ? '<div class="empty">ยังไม่มีข้อมูล — รอยูโรเปิดเล่นรอบแรก</div>'
+    : (weak.length? weak.map(c=>{
+        const col=c.score<=2?'var(--bad)':'var(--warn)';
+        return '<div class="bar"><div class="r1"><b>'+c.k+'</b><span>'+c.score+'★ · '+timeAgo(c.last)+'</span></div>'+
+               '<div class="track"><i style="width:'+(c.score/5*100)+'%;background:'+col+'"></i></div></div>';
+      }).join('') : '<div class="empty">ไม่มีใบที่คะแนน ≤ 3 เลย — แน่นทุกใบที่ทวนไปแล้ว 👏</div>');
+
+  // topic accuracy
+  const agg={};
+  aQuiz.forEach(q=>{ agg[q.topic]=agg[q.topic]||{ok:0,n:0}; agg[q.topic].n++; if(q.ok) agg[q.topic].ok++; });
+  const rows=Object.keys(agg).map(t=>({t:t,ok:agg[t].ok,n:agg[t].n,p:agg[t].ok/agg[t].n})).sort((a,b)=>a.p-b.p);
+  $('topicList').innerHTML = !rows.length
+    ? '<div class="empty">ยังไม่ได้ทำควิซ</div>'
+    : rows.map(r=>{
+        const col=r.p>=.8?'var(--good)':r.p>=.5?'var(--warn)':'var(--bad)';
+        return '<div class="bar"><div class="r1"><b>'+r.t+'</b><span>'+r.ok+'/'+r.n+' · '+Math.round(r.p*100)+'%</span></div>'+
+               '<div class="track"><i style="width:'+(r.p*100)+'%;background:'+col+'"></i></div></div>';
+      }).join('');
+
+  // feed
+  const fd=aFeed.slice().sort((a,b)=>b.t-a.t).slice(0,25);
+  $('feed').innerHTML = !fd.length
+    ? '<div class="empty">ยังไม่มีความเคลื่อนไหว</div>'
+    : fd.map(e=>{
+        let col='#5d616d', tx='';
+        if(e.type==='card'){ col=e.score<=2?'var(--bad)':e.score===3?'var(--warn)':'var(--good)';
+          tx='ทวนการ์ด <b>'+e.label+'</b> · ให้ '+e.score+'★'; }
+        else if(e.type==='quiz'){ col=e.ok?'var(--good)':'var(--bad)';
+          tx='ควิซ <b>'+e.label+'</b> · '+(e.ok?'ตอบถูก':'ตอบผิด'); }
+        else { col='var(--accent)';
+          tx='จบรอบ <b>'+(e.label==='flash'?'Flash Card':'Quiz')+'</b> · '+e.n+(e.label==='flash'?' ใบ เฉลี่ย '+e.score+'★':' ข้อ ได้ '+e.score); }
+        return '<div class="ev"><span class="dot" style="background:'+col+'"></span><span class="tx">'+tx+'</span><span class="tm">'+clock(e.t)+'</span></div>';
+      }).join('');
+}
+
+/* =========================================================
+   BIND
+   ========================================================= */
+function bind(el,fn){ if(el) el.addEventListener('click',function(e){e.preventDefault();fn(e);},false); }
+document.querySelectorAll('[data-act]').forEach(function(el){
+  const a=el.getAttribute('data-act');
+  bind(el, a==='flash'?startFlash : a==='quiz'?startQuiz : a==='replay'?replay : a==='logout'?logout : goHome);
+});
+document.querySelectorAll('[data-fill]').forEach(function(el){
+  bind(el,function(){ $('nameIn').value=el.getAttribute('data-fill'); $('loginErr').textContent=''; });
+});
+bind($('back'), goHome);
+bind($('fc'), flipCard);
+bind($('fcNext'), function(){ if(!$('fcNext').disabled) nextCard(); });
+bind($('qBtn'), quizAction);
+bind($('loginBtn'), doLogin);
+$('nameIn').addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); doLogin(); } });
+
+initFB();
+document.body.classList.add('js-on');
+(function autologin(){
+  const r=store.get('recall_role');
+  if(r==='learner'){ role='learner'; enterLearner(); }
+  else if(r==='admin'){ role='admin'; enterAdmin(); }
+  else show('login');
+})();
+</script>
+</body>
+</html>
